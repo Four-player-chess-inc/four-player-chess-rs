@@ -1,9 +1,12 @@
 use enum_iterator::IntoEnumIterator;
 use serde::{Deserialize, Serialize};
 //use std::ops::Index;
+use crate::board::{Board, PieceBoardTrait};
+use crate::ident::Step;
+use crate::move_direction::MoveDirection;
 use std::convert::TryFrom;
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum Row {
     R1,
     R2,
@@ -88,7 +91,7 @@ impl TryFrom<isize> for Row {
     }
 }*/
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 #[allow(non_camel_case_types)]
 pub enum Column {
     a,
@@ -645,11 +648,11 @@ impl Position {
             Position::n11 => Row::R11,
         }
     }
-    pub fn col_row(&self) -> (Row, Column) {
-        (self.row(), self.column())
+    pub fn col_row(&self) -> (Column, Row) {
+        (self.column(), self.row())
     }
     pub fn col_row_idx(&self) -> (isize, isize) {
-        (self.row().get_index(), self.column().get_index())
+        (self.column().get_index(), self.row().get_index())
     }
     pub fn line_between(pos_one: Position, pos_two: Position) -> Result<Vec<Position>, ()> {
         let (pos_one_col, pos_one_row) = pos_one.col_row_idx();
@@ -681,6 +684,12 @@ impl Position {
             };
         }
         Err(())
+    }
+
+    pub(crate) fn try_step(&self, step: Step) -> Result<Position, ()> {
+        let (mut col_idx, mut row_idx) = self.col_row_idx();
+
+        Position::try_from((col_idx + step.col_inc, row_idx + step.row_inc))
     }
 
     pub fn step(&self, direction: &Direction, distance: usize) -> Result<Position, ()> {
@@ -880,7 +889,7 @@ impl TryFrom<(Column, Row)> for Position {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Line {
     Column(Column),
     Row(Row),
@@ -961,4 +970,80 @@ impl Direction {
             _ => Err(()),
         }
     }
+}
+
+#[test]
+fn position_try_step() {
+    let board = Board::new();
+
+    let pawn = board.piece_board(Position::e2).unwrap();
+    let dt = pawn.piece.attrib().ident.direction_transformer();
+
+    dbg!(dt(MoveDirection::Forward(1)));
+    assert_eq!(
+        pawn.position
+            .try_step(dt(MoveDirection::Forward(1)))
+            .unwrap(),
+        Position::e3
+    );
+    assert_eq!(
+        pawn.position
+            .try_step(dt(MoveDirection::Forward(5)))
+            .unwrap(),
+        Position::e7
+    );
+    assert_eq!(
+        pawn.position.try_step(dt(MoveDirection::Forward(15))),
+        Err(())
+    );
+    assert_eq!(
+        pawn.position
+            .try_step(dt(MoveDirection::Backward(1)))
+            .unwrap(),
+        Position::e1
+    );
+    assert_eq!(
+        pawn.position.try_step(dt(MoveDirection::Backward(2))),
+        Err(())
+    );
+
+    let piece = board.piece_board(Position::b7).unwrap();
+    let dt = piece.piece.attrib().ident.direction_transformer();
+    assert_eq!(
+        piece
+            .position
+            .try_step(dt(MoveDirection::Forward(1)))
+            .unwrap(),
+        Position::c7
+    );
+
+    let piece = board.piece_board(Position::b7).unwrap();
+    let dt = piece.piece.attrib().ident.direction_transformer();
+    assert_eq!(
+        piece
+            .position
+            .try_step(dt(MoveDirection::Forward(5) + MoveDirection::Left(2)))
+            .unwrap(),
+        Position::g9
+    );
+
+    let piece = board.piece_board(Position::h13).unwrap();
+    let dt = piece.piece.attrib().ident.direction_transformer();
+    assert_eq!(
+        piece
+            .position
+            .try_step(dt(MoveDirection::Forward(3) + MoveDirection::Right(4)))
+            .unwrap(),
+        Position::d10
+    );
+
+    let piece = board.piece_board(Position::m9).unwrap();
+    let dt = piece.piece.attrib().ident.direction_transformer();
+    assert_eq!(
+        piece
+            .position
+            .try_step(dt(MoveDirection::Left(2) + MoveDirection::Backward(1)))
+            .unwrap(),
+        Position::n7
+    );
 }

@@ -53,7 +53,7 @@ impl Players {
     }
     pub fn iter(&self) -> PlayersIter {
         PlayersIter {
-            players: &self,
+            players: self,
             ident: Some(First),
         }
     }

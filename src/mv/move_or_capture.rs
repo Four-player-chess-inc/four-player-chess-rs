@@ -1,8 +1,9 @@
-use crate::board::Board;
-use crate::game::MakeMoveError;
-use crate::mv::Mv;
-use crate::position::Position;
+use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Ident;
+use crate::mv::move_or_capture::MakeMoveOk::KingCaptured;
+use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult, Mv};
+use crate::piece::Figure;
+use crate::position::Position;
 
 pub struct MoveOrCapture {
     pub from: Position,
@@ -10,20 +11,33 @@ pub struct MoveOrCapture {
 }
 
 impl Mv for MoveOrCapture {
-    fn make_move(&self, board: &mut Board, who_move_next: Ident) -> Result<(), MakeMoveError> {
+    fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
         let from_piece = board
-            .get_piece(self.from)
+            .piece_board(self.from)
             .ok_or(MakeMoveError::NothingToMove)?;
 
-
-        if from_piece.ident != who_move_next {
-            return Err(MakeMoveError::OpponentsPieceMoveAttempt)
+        if from_piece.piece.attrib().ident != who_move_next {
+            return Err(MakeMoveError::OpponentsPieceMoveAttempt);
         }
-        //let possible_moves = from_piece.move_variants(&board, self.from);
 
-        // нельзя ходить  под шах
+        if !from_piece.move_variants().contains(&self.to) {
+            return Err(MakeMoveError::BadMove);
+        }
 
+        let (recover, captured) = board.recoverable_piece_move(self.from, self.to).into();
 
-        Ok(())
+        let king = board.piece_board((Figure::King, who_move_next)).unwrap();
+        if king.under_attack_any().is_some() {
+            board.recover_move(recover);
+            return Err(MakeMoveError::MoveUnderCheck);
+        }
+
+        if let Some(piece) = captured {
+            if piece.figure() == Figure::King {
+                return Ok(MakeMoveOk::KingCaptured(piece.attrib().ident));
+            }
+        }
+
+        Ok(MakeMoveOk::None)
     }
 }

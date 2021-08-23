@@ -1,5 +1,12 @@
+mod piece_board;
+mod recover;
+mod test;
+
+pub(crate) use crate::board::piece_board::{PieceBoard, PieceBoardTrait};
+use crate::board::recover::{Recover, RecoverablePieceMove, SquarePos};
 use crate::ident::Ident::{self, *};
-use crate::piece::{Figure, Figure::*, Piece};
+use crate::piece::Figure::Pawn;
+use crate::piece::{Figure, Piece};
 use crate::position::{Column, Line, Position, Row};
 use std::collections::HashMap;
 use std::convert::TryFrom;
@@ -7,12 +14,6 @@ use std::default::Default;
 
 pub struct Board {
     pieces: HashMap<Position, Piece>,
-}
-
-pub struct PiecePos<'a> {
-    pub piece: &'a Piece,
-    pub position: Position,
-    board: &'a mut  Board
 }
 
 impl Board {
@@ -74,7 +75,64 @@ impl Board {
 
         return Board { pieces };
     }
-    pub fn get_piece(&self, pos: Position) -> Option<&Piece> {
+
+    pub(crate) fn piece(&self, pos: Position) -> Option<&Piece> {
         self.pieces.get(&pos)
+    }
+
+    pub(crate) fn piece_move(&mut self, from: Position, to: Position) -> Option<Piece> {
+        if let Some(mut piece) = self.pieces.remove(&from) {
+            piece.attrib_mut().have_not_move_yet = false;
+            return self.pieces.insert(to, piece);
+        }
+        None
+    }
+
+    pub(crate) fn recoverable_piece_move(
+        &mut self,
+        from: Position,
+        to: Position,
+    ) -> RecoverablePieceMove {
+        RecoverablePieceMove {
+            recover: Recover {
+                from: SquarePos {
+                    square: match self.pieces.get(&from) {
+                        Some(piece) => Some(piece.clone()),
+                        None => None,
+                    },
+                    position: from,
+                },
+                to: SquarePos {
+                    square: match self.pieces.get(&to) {
+                        Some(piece) => Some(piece.clone()),
+                        None => None,
+                    },
+                    position: to,
+                },
+            },
+            captured: self.piece_move(from, to),
+        }
+    }
+
+    pub(crate) fn recover_move(&mut self, recover: Recover) {
+        let from = &recover.from;
+        match &from.square {
+            Some(piece) => {
+                self.pieces.insert(from.position, piece.clone());
+            }
+            None => {
+                self.pieces.remove(&from.position);
+            }
+        }
+
+        let to = &recover.to;
+        match &to.square {
+            Some(piece) => {
+                self.pieces.insert(to.position, piece.clone());
+            }
+            None => {
+                self.pieces.remove(&to.position);
+            }
+        }
     }
 }

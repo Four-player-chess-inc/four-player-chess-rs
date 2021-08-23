@@ -2,7 +2,7 @@ mod board;
 pub mod game;
 mod ident;
 mod last_move;
-mod move_variants;
+mod move_direction;
 pub mod mv;
 mod piece;
 mod players;

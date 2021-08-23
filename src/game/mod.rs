@@ -4,19 +4,13 @@ use crate::board::Board;
 use crate::ident::Ident::{self, *};
 use crate::last_move::LastMove;
 use crate::mv::move_or_capture::MoveOrCapture;
-use crate::mv::Mv;
-use crate::players::Players;
+use crate::mv::{MakeMoveError, MakeMoveOk, Mv};
+use crate::players::{Player, Players};
 use crate::position::Position;
+use crate::state::State;
 use crate::state::State::{Lost, NoSpecial};
 
 mod test;
-
-#[derive(Debug)]
-pub enum MakeMoveError {
-    GameOver,
-    NothingToMove,
-    OpponentsPieceMoveAttempt
-}
 
 pub struct Game {
     //last_move: Option<LastMove<M>>,
@@ -42,15 +36,18 @@ impl Game {
             return Err(MakeMoveError::GameOver);
         }
 
-        mv.make_move(&mut self.board, self.who_move_next.unwrap());
-        /*match mv {
-            Move::MoveOrCapture { from, to } => unimplemented!(),
-            Move::Castling { rook } => unimplemented!(),
-            Move::PawnPromotion { from, to } => unimplemented!()
-        }*/
+
+        let ok = match mv.make_move(&mut self.board, self.who_move_next.unwrap()) {
+            Ok(ok) => ok,
+            Err(e) => return Err(e),
+        };
+
+        if let MakeMoveOk::KingCaptured(ident) = ok {
+            self.players.get_player_mut(ident).state = State::Lost;
+        }
 
         // TODO: update checkmate check stalemate states
-        // self.upate_states();
+        self.update_checkmates();
 
         self.roll_players();
 
@@ -118,5 +115,9 @@ impl Game {
             ),
             _ => None,
         }
+    }
+
+    fn update_checkmates(&self) {
+        unimplemented!()
     }
 }
