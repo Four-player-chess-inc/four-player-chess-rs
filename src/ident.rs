@@ -1,4 +1,5 @@
 use crate::move_direction::MoveDirection;
+use crate::position::{Line, Position};
 use std::iter::Iterator;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -38,6 +39,18 @@ impl Ident {
                 col_inc: -md.vertical,
                 row_inc: md.horizontal,
             },
+        }
+    }
+
+    // TODO: ugly
+    pub(crate) fn how_far_from_the_beginning(&self, pos: Position) -> usize {
+        match self {
+            Self::First => pos.row().get_index() as usize + 1,
+            Self::Second => pos.column().get_index() as usize + 1,
+            Self::Third => (Position::d14.row().get_index() - pos.row().get_index()) as usize + 1,
+            Self::Fourth => {
+                (Position::n11.column().get_index() - pos.column().get_index()) as usize + 1
+            }
         }
     }
 }

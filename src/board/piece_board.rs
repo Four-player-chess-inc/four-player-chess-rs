@@ -15,21 +15,8 @@ impl<'a> PieceBoard<'a> {
     }
 
     pub fn under_attack_any(&self) -> Option<Position> {
-        let opponets_pieces = self
-            .board
-            .pieces
-            .iter()
-            .filter(|p| p.1.attrib().ident != self.piece.attrib().ident);
-
-        for (pos, piece) in opponets_pieces {
-            if piece
-                .move_variants(self.board, *pos)
-                .contains(&self.position)
-            {
-                return Some(*pos);
-            }
-        }
-        None
+        self.board
+            .under_attack_any(self.position, self.piece.attrib().ident)
     }
 }
 

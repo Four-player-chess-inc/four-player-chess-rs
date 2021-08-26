@@ -40,15 +40,15 @@ pub enum Figure {
 pub(crate) struct CommonAttrib {
     pub(crate) ident: Ident,
     pub(crate) have_not_move_yet: bool,
-    pub(crate) home_line: Line,
+    //pub(crate) home_line: Line,
 }
 
 impl Piece {
-    pub fn new(figure: Figure, ident: Ident, home_line: Line) -> Piece {
+    pub fn new(figure: Figure, ident: Ident) -> Piece {
         let attrib = CommonAttrib {
             ident,
             have_not_move_yet: true,
-            home_line,
+            //home_line,
         };
 
         match figure {

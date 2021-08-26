@@ -1,6 +1,6 @@
 use std::default::Default;
 
-use crate::board::Board;
+use crate::board::{Board, CheckMate};
 use crate::ident::Ident::{self, *};
 use crate::last_move::LastMove;
 use crate::mv::move_or_capture::MoveOrCapture;
@@ -36,7 +36,6 @@ impl Game {
             return Err(MakeMoveError::GameOver);
         }
 
-
         let ok = match mv.make_move(&mut self.board, self.who_move_next.unwrap()) {
             Ok(ok) => ok,
             Err(e) => return Err(e),
@@ -46,7 +45,6 @@ impl Game {
             self.players.get_player_mut(ident).state = State::Lost;
         }
 
-        // TODO: update checkmate check stalemate states
         self.update_checkmates();
 
         self.roll_players();
@@ -117,7 +115,18 @@ impl Game {
         }
     }
 
-    fn update_checkmates(&self) {
-        unimplemented!()
+    fn update_checkmates(&mut self) {
+        let mut players = self
+            .players
+            .iter_mut()
+            .filter(|p| p.player.state != State::Lost);
+
+        for player in players {
+            player.player.state = self
+                .board
+                .check_checkmate_on_board(player.ident)
+                .unwrap()
+                .into();
+        }
     }
 }

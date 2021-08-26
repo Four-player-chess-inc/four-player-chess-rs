@@ -4,8 +4,9 @@ mod test;
 
 pub(crate) use crate::board::piece_board::{PieceBoard, PieceBoardTrait};
 use crate::board::recover::{Recover, RecoverablePieceMove, SquarePos};
+use crate::board::CheckMate::Checkmate;
 use crate::ident::Ident::{self, *};
-use crate::piece::Figure::Pawn;
+use crate::piece::Figure::{King, Pawn};
 use crate::piece::{Figure, Piece};
 use crate::position::{Column, Line, Position, Row};
 use std::collections::HashMap;
@@ -13,10 +14,18 @@ use std::convert::TryFrom;
 use std::default::Default;
 
 pub struct Board {
-    pieces: HashMap<Position, Piece>,
+    pub(crate) pieces: HashMap<Position, Piece>,
+}
+
+pub(crate) enum CheckMate {
+    No,
+    Check,
+    Checkmate,
+    Stalemate,
 }
 
 impl Board {
+    // TODO: ugly
     pub fn new() -> Board {
         let figure_seq = [
             Figure::Rook,
@@ -37,39 +46,39 @@ impl Board {
         (3..11_isize).zip(figure_seq).for_each(|i| {
             pieces.insert(
                 Position::try_from((i.0, Row::R2.get_index())).unwrap(),
-                Piece::new(Pawn, First, Line::Row(Row::R2)),
+                Piece::new(Pawn, First),
             );
             pieces.insert(
                 Position::try_from((Column::b.get_index(), i.0)).unwrap(),
-                Piece::new(Pawn, Second, Line::Column(Column::b)),
+                Piece::new(Pawn, Second),
             );
             pieces.insert(
                 Position::try_from((i.0, Row::R13.get_index())).unwrap(),
-                Piece::new(Pawn, Third, Line::Row(Row::R13)),
+                Piece::new(Pawn, Third),
             );
             pieces.insert(
                 Position::try_from((Column::m.get_index(), i.0)).unwrap(),
-                Piece::new(Pawn, Fourth, Line::Column(Column::m)),
+                Piece::new(Pawn, Fourth),
             );
 
             pieces.insert(
                 Position::try_from((i.0, Row::R1.get_index())).unwrap(),
-                Piece::new(i.1, First, Line::Row(Row::R1)),
+                Piece::new(i.1, First),
             );
             pieces.insert(
                 Position::try_from((Column::a.get_index(), i.0)).unwrap(),
-                Piece::new(i.1, Second, Line::Column(Column::a)),
+                Piece::new(i.1, Second),
             );
         });
 
         (3..11_isize).zip(figure_seq_rev).for_each(|i| {
             pieces.insert(
                 Position::try_from((i.0, Row::R14.get_index())).unwrap(),
-                Piece::new(i.1, Third, Line::Row(Row::R14)),
+                Piece::new(i.1, Third),
             );
             pieces.insert(
                 Position::try_from((Column::n.get_index(), i.0)).unwrap(),
-                Piece::new(i.1, Fourth, Line::Column(Column::n)),
+                Piece::new(i.1, Fourth),
             );
         });
 
@@ -86,6 +95,17 @@ impl Board {
             return self.pieces.insert(to, piece);
         }
         None
+    }
+
+    pub(crate) fn pieces_board(&self) -> Vec<PieceBoard> {
+        self.pieces
+            .iter()
+            .map(|(k, v)| PieceBoard {
+                piece: v,
+                position: *k,
+                board: self,
+            })
+            .collect::<Vec<_>>()
     }
 
     pub(crate) fn recoverable_piece_move(
@@ -134,5 +154,56 @@ impl Board {
                 self.pieces.remove(&to.position);
             }
         }
+    }
+
+    // TODO: ugly
+    pub(crate) fn check_checkmate_on_board(&mut self, ident: Ident) -> Result<CheckMate, ()> {
+        let (king_was_under_attack, king_pos) = match self.piece_board((Figure::King, ident)) {
+            Some(king) => (king.under_attack_any().is_some(), king.position),
+            None => return Err(()),
+        };
+
+        let our_pieces_pos = self
+            .pieces_board()
+            .iter()
+            .filter(|p| p.piece.attrib().ident == ident)
+            .map(|p| p.position)
+            .collect::<Vec<_>>();
+
+        for piece_pos in our_pieces_pos {
+            for mv in self.piece_board(piece_pos).unwrap().move_variants() {
+                let recover = self.recoverable_piece_move(piece_pos, mv);
+                let cur_king_pos = if king_pos == piece_pos { mv } else { king_pos };
+                if self
+                    .piece_board(cur_king_pos)
+                    .unwrap()
+                    .under_attack_any()
+                    .is_none()
+                {
+                    self.recover_move(recover.recover);
+                    return match king_was_under_attack {
+                        true => Ok(CheckMate::Check),
+                        false => Ok(CheckMate::No),
+                    };
+                }
+                self.recover_move(recover.recover);
+            }
+        }
+        return if king_was_under_attack {
+            Ok(CheckMate::Checkmate)
+        } else {
+            Ok(CheckMate::Stalemate)
+        };
+    }
+
+    pub(crate) fn under_attack_any(&self, target_pos: Position, ours: Ident) -> Option<Position> {
+        let opponets_pieces = self.pieces.iter().filter(|p| p.1.attrib().ident != ours);
+
+        for (pos, piece) in opponets_pieces {
+            if piece.move_variants(self, *pos).contains(&target_pos) {
+                return Some(*pos);
+            }
+        }
+        None
     }
 }

@@ -1,3 +1,6 @@
+use crate::board::CheckMate;
+use std::convert::From;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum State {
     NoSpecial,
@@ -12,6 +15,17 @@ impl State {
         match self {
             Self::Check | Self::Checkmate | Self::Stalemate => true,
             Self::Lost | Self::NoSpecial => false,
+        }
+    }
+}
+
+impl From<CheckMate> for State {
+    fn from(checkmate: CheckMate) -> Self {
+        match checkmate {
+            CheckMate::No => Self::NoSpecial,
+            CheckMate::Stalemate => Self::Stalemate,
+            CheckMate::Checkmate => Self::Checkmate,
+            CheckMate::Check => Self::Check,
         }
     }
 }
