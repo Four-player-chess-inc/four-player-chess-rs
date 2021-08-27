@@ -1,5 +1,5 @@
 use crate::move_direction::MoveDirection;
-use crate::position::{Line, Position};
+use crate::position::Position;
 use std::iter::Iterator;
 
 #[derive(Debug, Clone, Copy, PartialEq)]

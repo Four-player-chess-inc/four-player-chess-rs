@@ -1,6 +1,5 @@
 use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Ident;
-use crate::mv::move_or_capture::MakeMoveOk::KingCaptured;
 use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult, Mv};
 use crate::piece::Figure;
 use crate::position::Position;

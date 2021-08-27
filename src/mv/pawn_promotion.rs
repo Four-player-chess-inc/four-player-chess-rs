@@ -25,7 +25,7 @@ impl Mv for PawnPromotion {
         }
 
         let dt = from_piece.piece.attrib().ident.direction_transformer();
-        let dst_pos = match from_piece.position.try_step(dt(MoveDirection::Forward(1))) {
+        let dst_pos = match from_piece.position.try_step(dt(MoveDirection::forward(1))) {
             Ok(pos) => pos,
             Err(_) => return Err(MakeMoveError::BadMove),
         };

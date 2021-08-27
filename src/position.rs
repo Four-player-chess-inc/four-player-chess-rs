@@ -1,10 +1,9 @@
 use enum_iterator::IntoEnumIterator;
 use serde::{Deserialize, Serialize};
-//use std::ops::Index;
-use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Step;
-use crate::move_direction::MoveDirection;
 use std::convert::TryFrom;
+
+
 
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub enum Row {
@@ -687,7 +686,7 @@ impl Position {
     }
 
     pub(crate) fn try_step(&self, step: Step) -> Result<Position, ()> {
-        let (mut col_idx, mut row_idx) = self.col_row_idx();
+        let (col_idx, row_idx) = self.col_row_idx();
 
         Position::try_from((col_idx + step.col_inc, row_idx + step.row_inc))
     }
@@ -974,36 +973,39 @@ impl Direction {
 
 #[test]
 fn position_try_step() {
+    use crate::board::{Board, PieceBoardTrait};
+    use crate::move_direction::MoveDirection;
+
     let board = Board::new();
 
     let pawn = board.piece_board(Position::e2).unwrap();
     let dt = pawn.piece.attrib().ident.direction_transformer();
 
-    dbg!(dt(MoveDirection::Forward(1)));
+    dbg!(dt(MoveDirection::forward(1)));
     assert_eq!(
         pawn.position
-            .try_step(dt(MoveDirection::Forward(1)))
+            .try_step(dt(MoveDirection::forward(1)))
             .unwrap(),
         Position::e3
     );
     assert_eq!(
         pawn.position
-            .try_step(dt(MoveDirection::Forward(5)))
+            .try_step(dt(MoveDirection::forward(5)))
             .unwrap(),
         Position::e7
     );
     assert_eq!(
-        pawn.position.try_step(dt(MoveDirection::Forward(15))),
+        pawn.position.try_step(dt(MoveDirection::forward(15))),
         Err(())
     );
     assert_eq!(
         pawn.position
-            .try_step(dt(MoveDirection::Backward(1)))
+            .try_step(dt(MoveDirection::backward(1)))
             .unwrap(),
         Position::e1
     );
     assert_eq!(
-        pawn.position.try_step(dt(MoveDirection::Backward(2))),
+        pawn.position.try_step(dt(MoveDirection::backward(2))),
         Err(())
     );
 
@@ -1012,7 +1014,7 @@ fn position_try_step() {
     assert_eq!(
         piece
             .position
-            .try_step(dt(MoveDirection::Forward(1)))
+            .try_step(dt(MoveDirection::forward(1)))
             .unwrap(),
         Position::c7
     );
@@ -1022,7 +1024,7 @@ fn position_try_step() {
     assert_eq!(
         piece
             .position
-            .try_step(dt(MoveDirection::Forward(5) + MoveDirection::Left(2)))
+            .try_step(dt(MoveDirection::forward(5) + MoveDirection::left(2)))
             .unwrap(),
         Position::g9
     );
@@ -1032,7 +1034,7 @@ fn position_try_step() {
     assert_eq!(
         piece
             .position
-            .try_step(dt(MoveDirection::Forward(3) + MoveDirection::Right(4)))
+            .try_step(dt(MoveDirection::forward(3) + MoveDirection::right(4)))
             .unwrap(),
         Position::d10
     );
@@ -1042,7 +1044,7 @@ fn position_try_step() {
     assert_eq!(
         piece
             .position
-            .try_step(dt(MoveDirection::Left(2) + MoveDirection::Backward(1)))
+            .try_step(dt(MoveDirection::left(2) + MoveDirection::backward(1)))
             .unwrap(),
         Position::n7
     );

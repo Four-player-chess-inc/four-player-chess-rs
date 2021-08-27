@@ -15,10 +15,10 @@ impl Rook {
         let dt = self.attrib.ident.direction_transformer();
 
         let moves = [
-            |i| MoveDirection::Forward(i),
-            |i| MoveDirection::Right(i),
-            |i| MoveDirection::Backward(i),
-            |i| MoveDirection::Left(i),
+            |i| MoveDirection::forward(i),
+            |i| MoveDirection::right(i),
+            |i| MoveDirection::backward(i),
+            |i| MoveDirection::left(i),
         ];
 
         for md_func in moves {

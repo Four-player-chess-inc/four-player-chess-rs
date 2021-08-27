@@ -15,14 +15,14 @@ impl Knight {
         let dt = self.attrib.ident.direction_transformer();
 
         let moves = [
-            MoveDirection::Forward(2) + MoveDirection::Left(1),
-            MoveDirection::Forward(2) + MoveDirection::Right(1),
-            MoveDirection::Right(2) + MoveDirection::Forward(1),
-            MoveDirection::Right(2) + MoveDirection::Backward(1),
-            MoveDirection::Backward(2) + MoveDirection::Right(1),
-            MoveDirection::Backward(2) + MoveDirection::Left(1),
-            MoveDirection::Left(2) + MoveDirection::Backward(1),
-            MoveDirection::Left(2) + MoveDirection::Forward(1),
+            MoveDirection::forward(2) + MoveDirection::left(1),
+            MoveDirection::forward(2) + MoveDirection::right(1),
+            MoveDirection::right(2) + MoveDirection::forward(1),
+            MoveDirection::right(2) + MoveDirection::backward(1),
+            MoveDirection::backward(2) + MoveDirection::right(1),
+            MoveDirection::backward(2) + MoveDirection::left(1),
+            MoveDirection::left(2) + MoveDirection::backward(1),
+            MoveDirection::left(2) + MoveDirection::forward(1),
         ];
 
         for md in moves {

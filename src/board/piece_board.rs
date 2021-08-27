@@ -1,7 +1,7 @@
 use crate::board::Board;
 use crate::ident::Ident;
 use crate::piece::{Figure, Piece};
-use crate::position::Position::{self, *};
+use crate::position::Position::{self};
 
 pub(crate) struct PieceBoard<'a> {
     pub(crate) piece: &'a Piece,
@@ -54,27 +54,33 @@ impl PieceBoardTrait<(Figure, Ident)> for Board {
     }
 }
 
-#[test]
-fn move_variants() {
-    let board = Board::new();
-    let t = board.piece_board(e2).unwrap();
-    assert_eq!(t.move_variants(), vec![e3, e4]);
-    let t = board.piece_board(e1).unwrap();
-    assert_eq!(t.move_variants(), vec![d3, f3]);
-    let t = board.piece_board(g1).unwrap();
-    assert_eq!(t.move_variants(), vec![]);
+#[cfg(test)]
+mod test {
+    use crate::position::Position::{*};
+    use crate::board::{Board, PieceBoardTrait};
 
-    let mut board = Board::new();
-    board.pieces.remove(&f2);
-    let t = board.piece_board(g1).unwrap();
-    assert_eq!(t.move_variants(), vec![f2, e3, d4, c5, b6]);
+    #[test]
+    fn move_variants() {
+        let board = Board::new();
+        let t = board.piece_board(e2).unwrap();
+        assert_eq!(t.move_variants(), vec![e3, e4]);
+        let t = board.piece_board(e1).unwrap();
+        assert_eq!(t.move_variants(), vec![d3, f3]);
+        let t = board.piece_board(g1).unwrap();
+        assert_eq!(t.move_variants(), vec![]);
 
-    let mut board = Board::new();
-    board.piece_move(g1, a7);
-    board.pieces.remove(&b8);
-    let t = board.piece_board(a7).unwrap();
-    assert_eq!(
-        t.move_variants(),
-        vec![a8, b8, c9, d10, e11, f12, g13, b7, b6, a6]
-    );
+        let mut board = Board::new();
+        board.pieces.remove(&f2);
+        let t = board.piece_board(g1).unwrap();
+        assert_eq!(t.move_variants(), vec![f2, e3, d4, c5, b6]);
+
+        let mut board = Board::new();
+        board.piece_move(g1, a7);
+        board.pieces.remove(&b8);
+        let t = board.piece_board(a7).unwrap();
+        assert_eq!(
+            t.move_variants(),
+            vec![a8, b8, c9, d10, e11, f12, g13, b7, b6, a6]
+        );
+    }
 }

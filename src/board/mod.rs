@@ -4,19 +4,18 @@ mod test;
 
 pub(crate) use crate::board::piece_board::{PieceBoard, PieceBoardTrait};
 use crate::board::recover::{Recover, RecoverablePieceMove, SquarePos};
-use crate::board::CheckMate::Checkmate;
 use crate::ident::Ident::{self, *};
-use crate::piece::Figure::{King, Pawn};
+use crate::piece::Figure::{Pawn};
 use crate::piece::{Figure, Piece};
-use crate::position::{Column, Line, Position, Row};
+use crate::position::{Column, Position, Row};
 use std::collections::HashMap;
 use std::convert::TryFrom;
-use std::default::Default;
 
 pub struct Board {
     pub(crate) pieces: HashMap<Position, Piece>,
 }
 
+#[derive(Debug, PartialEq)]
 pub(crate) enum CheckMate {
     No,
     Check,
@@ -197,7 +196,10 @@ impl Board {
     }
 
     pub(crate) fn under_attack_any(&self, target_pos: Position, ours: Ident) -> Option<Position> {
-        let opponets_pieces = self.pieces.iter().filter(|p| p.1.attrib().ident != ours);
+        let opponets_pieces = self
+            .pieces
+            .iter()
+            .filter(|p| p.1.attrib().ident != ours && !p.1.attrib().stone);
 
         for (pos, piece) in opponets_pieces {
             if piece.move_variants(self, *pos).contains(&target_pos) {

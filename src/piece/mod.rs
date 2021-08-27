@@ -6,15 +6,14 @@ mod queen;
 mod rook;
 
 use crate::board::Board;
-use crate::ident::{Ident, Step};
-use crate::move_direction::MoveDirection;
+use crate::ident::Ident;
 use crate::piece::bishop::Bishop;
 use crate::piece::king::King;
 use crate::piece::knight::Knight;
 use crate::piece::pawn::Pawn;
 use crate::piece::queen::Queen;
 use crate::piece::rook::Rook;
-use crate::position::{Column, Line, Position, Row};
+use crate::position::Position;
 
 #[derive(Clone, Debug)]
 pub(crate) enum Piece {
@@ -40,7 +39,7 @@ pub enum Figure {
 pub(crate) struct CommonAttrib {
     pub(crate) ident: Ident,
     pub(crate) have_not_move_yet: bool,
-    //pub(crate) home_line: Line,
+    pub(crate) stone: bool, //pub(crate) home_line: Line,
 }
 
 impl Piece {
@@ -48,6 +47,7 @@ impl Piece {
         let attrib = CommonAttrib {
             ident,
             have_not_move_yet: true,
+            stone: false,
             //home_line,
         };
 

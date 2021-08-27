@@ -17,6 +17,7 @@ impl Default for Player {
     }
 }
 
+#[derive(Debug)]
 pub struct Players {
     first: Player,
     second: Player,

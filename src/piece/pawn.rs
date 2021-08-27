@@ -14,20 +14,20 @@ impl Pawn {
 
         let dt = self.attrib.ident.direction_transformer();
 
-        if let Ok(step_to_pos) = pos.try_step(dt(MoveDirection::Forward(1))) {
+        if let Ok(step_to_pos) = pos.try_step(dt(MoveDirection::forward(1))) {
             if board.piece(step_to_pos).is_none() {
                 variants.push(step_to_pos);
             }
         }
 
         if self.attrib.have_not_move_yet {
-            let step_to_pos = pos.try_step(dt(MoveDirection::Forward(2))).unwrap();
+            let step_to_pos = pos.try_step(dt(MoveDirection::forward(2))).unwrap();
             if board.piece(step_to_pos).is_none() {
                 variants.push(step_to_pos);
             }
         }
 
-        let eat_left = MoveDirection::Forward(1) + MoveDirection::Left(1);
+        let eat_left = MoveDirection::forward(1) + MoveDirection::left(1);
         if let Ok(eat_left_pos) = pos.try_step(dt(eat_left)) {
             if let Some(piece) = board.piece(eat_left_pos) {
                 if piece.attrib().ident != self.attrib.ident {
@@ -36,7 +36,7 @@ impl Pawn {
             }
         }
 
-        let eat_right = MoveDirection::Forward(1) + MoveDirection::Right(1);
+        let eat_right = MoveDirection::forward(1) + MoveDirection::right(1);
         if let Ok(eat_right_pos) = pos.try_step(dt(eat_right)) {
             if let Some(piece) = board.piece(eat_right_pos) {
                 if piece.attrib().ident != self.attrib.ident {

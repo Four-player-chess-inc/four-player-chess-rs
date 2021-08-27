@@ -6,25 +6,25 @@ pub(crate) struct MoveDirection {
 }
 
 impl MoveDirection {
-    pub(crate) fn Forward(steps: usize) -> MoveDirection {
+    pub(crate) fn forward(steps: usize) -> MoveDirection {
         MoveDirection {
             vertical: steps as isize,
             horizontal: 0,
         }
     }
-    pub(crate) fn Backward(steps: usize) -> MoveDirection {
+    pub(crate) fn backward(steps: usize) -> MoveDirection {
         MoveDirection {
             vertical: -(steps as isize),
             horizontal: 0,
         }
     }
-    pub(crate) fn Right(steps: usize) -> MoveDirection {
+    pub(crate) fn right(steps: usize) -> MoveDirection {
         MoveDirection {
             vertical: 0,
             horizontal: steps as isize,
         }
     }
-    pub(crate) fn Left(steps: usize) -> MoveDirection {
+    pub(crate) fn left(steps: usize) -> MoveDirection {
         MoveDirection {
             vertical: 0,
             horizontal: -(steps as isize),

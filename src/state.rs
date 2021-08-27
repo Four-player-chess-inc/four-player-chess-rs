@@ -13,8 +13,8 @@ pub enum State {
 impl State {
     pub fn lost_when_turn_is_come(&self) -> bool {
         match self {
-            Self::Check | Self::Checkmate | Self::Stalemate => true,
-            Self::Lost | Self::NoSpecial => false,
+            Self::Checkmate | Self::Stalemate => true,
+            Self::Lost | Self::NoSpecial | Self::Check => false,
         }
     }
 }

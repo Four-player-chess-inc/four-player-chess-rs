@@ -1,14 +1,11 @@
 use std::default::Default;
 
-use crate::board::{Board, CheckMate};
-use crate::ident::Ident::{self, *};
-use crate::last_move::LastMove;
-use crate::mv::move_or_capture::MoveOrCapture;
+use crate::board::{Board};
+use crate::ident::Ident::{self};
 use crate::mv::{MakeMoveError, MakeMoveOk, Mv};
-use crate::players::{Player, Players};
-use crate::position::Position;
+use crate::players::{Players};
 use crate::state::State;
-use crate::state::State::{Lost, NoSpecial};
+use crate::state::State::{Lost};
 
 mod test;
 
@@ -43,6 +40,11 @@ impl Game {
 
         if let MakeMoveOk::KingCaptured(ident) = ok {
             self.players.get_player_mut(ident).state = State::Lost;
+            self.board
+                .pieces
+                .iter_mut()
+                .filter(|p| p.1.attrib().ident == ident)
+                .for_each(|p| p.1.attrib_mut().stone = true);
         }
 
         self.update_checkmates();
@@ -81,6 +83,11 @@ impl Game {
             let mut player = self.players.get_player_mut(maybe_next_move);
             if player.state.lost_when_turn_is_come() {
                 player.state = Lost;
+                self.board
+                    .pieces
+                    .iter_mut()
+                    .filter(|p| p.1.attrib().ident == maybe_next_move)
+                    .for_each(|p| p.1.attrib_mut().stone = true);
             }
 
             if player.state == Lost {
@@ -116,7 +123,7 @@ impl Game {
     }
 
     fn update_checkmates(&mut self) {
-        let mut players = self
+        let players = self
             .players
             .iter_mut()
             .filter(|p| p.player.state != State::Lost);

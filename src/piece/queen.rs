@@ -15,14 +15,14 @@ impl Queen {
         let dt = self.attrib.ident.direction_transformer();
 
         let moves = [
-            |i| MoveDirection::Forward(i),
-            |i| MoveDirection::Forward(i) + MoveDirection::Right(i),
-            |i| MoveDirection::Right(i),
-            |i| MoveDirection::Backward(i) + MoveDirection::Right(i),
-            |i| MoveDirection::Backward(i),
-            |i| MoveDirection::Backward(i) + MoveDirection::Left(i),
-            |i| MoveDirection::Left(i),
-            |i| MoveDirection::Forward(i) + MoveDirection::Left(i),
+            |i| MoveDirection::forward(i),
+            |i| MoveDirection::forward(i) + MoveDirection::right(i),
+            |i| MoveDirection::right(i),
+            |i| MoveDirection::backward(i) + MoveDirection::right(i),
+            |i| MoveDirection::backward(i),
+            |i| MoveDirection::backward(i) + MoveDirection::left(i),
+            |i| MoveDirection::left(i),
+            |i| MoveDirection::forward(i) + MoveDirection::left(i),
         ];
 
         for md_func in moves {

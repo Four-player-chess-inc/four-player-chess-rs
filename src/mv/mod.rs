@@ -4,9 +4,8 @@ mod pawn_promotion;
 
 use crate::board::Board;
 use crate::ident::Ident;
-use crate::position::Position;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum MakeMoveError {
     GameOver,
     NothingToMove,
