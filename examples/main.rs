@@ -1,4 +1,6 @@
-use fpc_game_lib::{game::Game, mv::move_or_capture::MoveOrCapture, position::Position};
+use four_player_chess_rs::mv::move_or_capture::MoveOrCapture;
+use four_player_chess_rs::position::Position;
+use four_player_chess_rs::game::Game;
 
 fn main() {
     let mut game = Game::new();
