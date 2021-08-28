@@ -2,8 +2,7 @@
 mod tests {
     use crate::four_player_chess::FourPlayerChess;
     use crate::ident::Ident::*;
-    use crate::mv::move_or_capture::MoveOrCapture;
-    use crate::mv::{MakeMoveError, Move};
+    use crate::mv::{Move, MakeMoveError};
     use crate::position::Position::*;
     use crate::board::PieceBoardTrait;
     use crate::piece::Figure;
@@ -42,7 +41,8 @@ mod tests {
         assert_eq!(game.who_move_next(), Some(First));
         game.make_move(Move::move_or_capture(g1, g2)).unwrap();
         assert_eq!(game.who_move_next(), Some(Second));
-        let x = game.make_move(Move::move_or_capture(c7, d7));
+        let t = game.make_move(Move::move_or_capture(c7, d7));
+        assert_eq!(t.unwrap_err(), MakeMoveError::MoveUnderCheck);
 
 
         let mut game = FourPlayerChess::new();
@@ -70,7 +70,7 @@ mod tests {
         game.make_move(Move::move_or_capture(b4, c4)).unwrap();
         game.make_move(Move::move_or_capture(e13, e12)).unwrap();
 
-        let t = game.board.piece_board((Figure::King, First)).unwrap();
+        game.board.piece_board((Figure::King, First)).unwrap();
         game.make_move(Move::move_or_capture(h2, g3)).unwrap();
         assert_eq!(game.players.get_player(First).state, NoSpecial);
         game.make_move(Move::move_or_capture(g8, h8)).unwrap();

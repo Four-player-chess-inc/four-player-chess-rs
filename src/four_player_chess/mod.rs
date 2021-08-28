@@ -13,7 +13,6 @@ mod test;
 pub struct FourPlayerChess {
     last_move: Option<LastMove>,
     who_move_next: Option<Ident>,
-    who_win: Option<Ident>,
     players: Players,
     board: Board,
 }
@@ -23,7 +22,6 @@ impl FourPlayerChess {
         FourPlayerChess {
             last_move: None,
             who_move_next: Some(Ident::First),
-            who_win: None,
             players: Players::default(),
             board: Board::new(),
         }

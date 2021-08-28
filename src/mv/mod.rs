@@ -7,7 +7,7 @@ use crate::ident::Ident;
 use crate::mv::castling::Castling;
 use crate::mv::move_or_capture::MoveOrCapture;
 use crate::mv::pawn_promotion::PawnPromotion;
-use crate::piece::{CommonAttrib, Figure};
+use crate::piece::{Figure};
 use crate::position::Position;
 
 #[derive(Debug, PartialEq)]

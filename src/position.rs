@@ -813,12 +813,6 @@ impl TryFrom<(Column, Row)> for Position {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
-pub(crate) enum Line {
-    Column(Column),
-    Row(Row),
-}
-
 #[test]
 fn position_try_step() {
     use crate::board::{Board, PieceBoardTrait};
