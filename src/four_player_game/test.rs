@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::game::Game;
+    use crate::four_player_game::FourPlayerChess;
     use crate::ident::Ident::*;
     use crate::mv::move_or_capture::MoveOrCapture;
     use crate::mv::{MakeMoveError, Move};
@@ -11,7 +11,7 @@ mod tests {
 
     #[test]
     fn test_roll_players() {
-        let mut game = Game::new();
+        let mut game = FourPlayerChess::new();
         assert_eq!(game.who_move_next(), Some(First));
         game.abandon_move();
         assert_eq!(game.who_move_next(), Some(Second));
@@ -21,7 +21,7 @@ mod tests {
         assert_eq!(game.who_move_next(), None);
         assert_eq!(game.who_win(), Some(Fourth));
 
-        let mut game = Game::new();
+        let mut game = FourPlayerChess::new();
         assert_eq!(game.who_move_next(), Some(First));
         assert_eq!(game.who_move_next(), Some(First));
         game.abandon_move();
@@ -34,7 +34,7 @@ mod tests {
         assert_eq!(game.who_move_next(), None);
         assert_eq!(game.who_win(), Some(Second));
 
-        let mut game = Game::new();
+        let mut game = FourPlayerChess::new();
         game.make_move(Move::move_or_capture(g2, g3)).unwrap();
         game.make_move(Move::move_or_capture(b7, c7)).unwrap();
         game.abandon_move();
@@ -45,7 +45,7 @@ mod tests {
         let x = game.make_move(Move::move_or_capture(c7, d7));
 
 
-        let mut game = Game::new();
+        let mut game = FourPlayerChess::new();
         game.make_move(Move::move_or_capture(h2, h3)).unwrap();
         game.make_move(Move::move_or_capture(b8, d8)).unwrap();
         game.make_move(Move::move_or_capture(h13, h12)).unwrap();

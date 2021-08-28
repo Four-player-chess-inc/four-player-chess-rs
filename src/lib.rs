@@ -1,7 +1,7 @@
 mod board;
-pub mod game;
-mod ident;
-mod last_move;
+pub mod four_player_game;
+pub mod ident;
+pub mod last_move;
 mod move_direction;
 pub mod mv;
 mod piece;

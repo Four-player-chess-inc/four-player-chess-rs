@@ -1,6 +1,6 @@
-mod castling;
 pub mod move_or_capture;
-mod pawn_promotion;
+pub mod castling;
+pub mod pawn_promotion;
 
 use crate::board::Board;
 use crate::ident::Ident;

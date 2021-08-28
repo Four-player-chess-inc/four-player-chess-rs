@@ -10,7 +10,7 @@ use crate::last_move::LastMove;
 
 mod test;
 
-pub struct Game {
+pub struct FourPlayerChess {
     last_move: Option<LastMove>,
     who_move_next: Option<Ident>,
     who_win: Option<Ident>,
@@ -18,9 +18,9 @@ pub struct Game {
     board: Board,
 }
 
-impl Game {
-    pub fn new() -> Game {
-        Game {
+impl FourPlayerChess {
+    pub fn new() -> FourPlayerChess {
+        FourPlayerChess {
             last_move: None,
             who_move_next: Some(Ident::First),
             who_win: None,

@@ -1,6 +1,4 @@
 use crate::ident::Step;
-use enum_iterator::IntoEnumIterator;
-use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -128,7 +126,7 @@ impl TryFrom<isize> for Column {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, IntoEnumIterator, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[allow(non_camel_case_types)]
 pub enum Position {
     a4,

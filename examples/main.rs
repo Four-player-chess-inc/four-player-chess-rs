@@ -1,10 +1,10 @@
-use four_player_chess::game::Game;
+use four_player_chess::four_player_game::FourPlayerChess;
 use four_player_chess::mv::move_or_capture::MoveOrCapture;
 use four_player_chess::position::Position::*;
 use four_player_chess::mv::Move;
 
 fn main() {
-    let mut game = Game::new();
+    let mut game = FourPlayerChess::new();
 
     while let Some(who_move) = game.who_move_next() {
         println!("make move: {:?}", who_move);
@@ -14,6 +14,5 @@ fn main() {
             Err(e) => println!("move failed due to error {:?}", e),
         }
     }
-
-    //println!("gave over, winner is {:?}", game.who_win().unwrap());
+    println!("gave over, winner is {:?}", game.who_win().unwrap());
 }
