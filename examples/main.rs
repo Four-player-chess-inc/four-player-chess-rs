@@ -1,7 +1,7 @@
-use four_player_chess_rs::game::Game;
-use four_player_chess_rs::mv::move_or_capture::MoveOrCapture;
-use four_player_chess_rs::position::Position::*;
-use four_player_chess_rs::mv::Move;
+use four_player_chess::game::Game;
+use four_player_chess::mv::move_or_capture::MoveOrCapture;
+use four_player_chess::position::Position::*;
+use four_player_chess::mv::Move;
 
 fn main() {
     let mut game = Game::new();
