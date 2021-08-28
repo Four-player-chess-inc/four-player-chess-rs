@@ -34,7 +34,6 @@ impl Bishop {
                     }
                     break;
                 }
-
                 variants.push(step_to_pos);
             }
         }

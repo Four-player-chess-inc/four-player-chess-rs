@@ -28,16 +28,15 @@ impl King {
         for md in moves {
             let step_to_pos = match pos.try_step(dt(md)) {
                 Ok(step_to_pos) => step_to_pos,
-                Err(_) => break,
+                Err(_) => continue,
             };
 
             if let Some(piece) = board.piece(step_to_pos) {
                 if piece.attrib().ident != self.attrib.ident {
                     variants.push(step_to_pos);
                 }
-                break;
+                continue;
             }
-
             variants.push(step_to_pos);
         }
         variants

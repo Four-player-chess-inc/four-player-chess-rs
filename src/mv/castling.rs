@@ -10,6 +10,7 @@ pub struct Castling {
 }
 
 impl Castling {
+    // TODO: ugly
     pub(crate) fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
         {
             let rook = board

@@ -38,7 +38,6 @@ impl Queen {
                     }
                     break;
                 }
-
                 variants.push(step_to_pos);
             }
         }
