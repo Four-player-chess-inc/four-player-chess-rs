@@ -1,11 +1,10 @@
 #[cfg(test)]
 mod test {
-    use crate::position::Position::{self, *};
-    use crate::piece::Figure;
-    use crate::ident::Ident::{First, Fourth, Second, Third};
     use crate::board::{Board, CheckMate};
     use crate::ident::Ident;
-
+    use crate::ident::Ident::{First, Fourth, Second, Third};
+    use crate::piece::Figure;
+    use crate::position::Position::{self, *};
 
     #[test]
     fn init_board() {

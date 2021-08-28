@@ -1,6 +1,6 @@
 use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Ident;
-use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult, Mv};
+use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::Figure;
 use crate::position::Position;
 
@@ -9,8 +9,8 @@ pub struct MoveOrCapture {
     pub to: Position,
 }
 
-impl Mv for MoveOrCapture {
-    fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
+impl MoveOrCapture {
+    pub(crate) fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
         let from_piece = board
             .piece_board(self.from)
             .ok_or(MakeMoveError::NothingToMove)?;

@@ -5,7 +5,7 @@ mod test;
 pub(crate) use crate::board::piece_board::{PieceBoard, PieceBoardTrait};
 use crate::board::recover::{Recover, RecoverablePieceMove, SquarePos};
 use crate::ident::Ident::{self, *};
-use crate::piece::Figure::{Pawn};
+use crate::piece::Figure::Pawn;
 use crate::piece::{Figure, Piece};
 use crate::position::{Column, Position, Row};
 use std::collections::HashMap;

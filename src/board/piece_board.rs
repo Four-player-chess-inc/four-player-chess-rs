@@ -56,8 +56,8 @@ impl PieceBoardTrait<(Figure, Ident)> for Board {
 
 #[cfg(test)]
 mod test {
-    use crate::position::Position::{*};
     use crate::board::{Board, PieceBoardTrait};
+    use crate::position::Position::*;
 
     #[test]
     fn move_variants() {

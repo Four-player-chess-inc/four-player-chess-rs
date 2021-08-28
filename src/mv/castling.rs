@@ -1,7 +1,7 @@
 use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Ident;
 use crate::move_direction::MoveDirection;
-use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult, Mv};
+use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::Figure;
 use crate::position::Position;
 
@@ -9,8 +9,8 @@ pub struct Castling {
     pub rook: Position,
 }
 
-impl Mv for Castling {
-    fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
+impl Castling {
+    pub(crate) fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
         {
             let rook = board
                 .piece_board(self.rook)

@@ -1,16 +1,17 @@
 use std::default::Default;
 
-use crate::board::{Board};
+use crate::board::Board;
 use crate::ident::Ident::{self};
-use crate::mv::{MakeMoveError, MakeMoveOk, Mv};
-use crate::players::{Players};
+use crate::mv::{MakeMoveError, MakeMoveOk, Move};
+use crate::players::Players;
 use crate::state::State;
-use crate::state::State::{Lost};
+use crate::state::State::Lost;
+use crate::last_move::LastMove;
 
 mod test;
 
 pub struct Game {
-    //last_move: Option<LastMove<M>>,
+    last_move: Option<LastMove>,
     who_move_next: Option<Ident>,
     who_win: Option<Ident>,
     players: Players,
@@ -20,7 +21,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         Game {
-            //last_move: None,
+            last_move: None,
             who_move_next: Some(Ident::First),
             who_win: None,
             players: Players::default(),
@@ -28,12 +29,13 @@ impl Game {
         }
     }
 
-    pub fn make_move<M: Mv>(&mut self, mv: M) -> Result<(), MakeMoveError> {
-        if self.who_move_next.is_none() {
-            return Err(MakeMoveError::GameOver);
-        }
+    pub fn make_move(&mut self, mv: Move) -> Result<(), MakeMoveError> {
+        let who_move_next = match self.who_move_next {
+            Some(wmn) => wmn,
+            None => return Err(MakeMoveError::GameOver)
+        };
 
-        let ok = match mv.make_move(&mut self.board, self.who_move_next.unwrap()) {
+        let ok = match mv.make_move(&mut self.board, who_move_next) {
             Ok(ok) => ok,
             Err(e) => return Err(e),
         };
@@ -46,6 +48,11 @@ impl Game {
                 .filter(|p| p.1.attrib().ident == ident)
                 .for_each(|p| p.1.attrib_mut().stone = true);
         }
+
+        self.last_move = Some(LastMove {
+            who: who_move_next,
+            mv
+        });
 
         self.update_checkmates();
 
@@ -69,11 +76,6 @@ impl Game {
         };
 
         for maybe_next_move in prev_who_move_next.spin() {
-            //if prev_who_move_next == maybe_next_move {
-            //    self.who_move_next = None;
-            //    break;
-            //}
-
             let no_lost_players = self.players.iter().filter(|p| p.player.state != Lost);
             if no_lost_players.count() == 1 {
                 self.who_move_next = None;
@@ -103,10 +105,9 @@ impl Game {
         self.who_move_next
     }
 
-    //pub fn get_last_move(&self) -> Option<&LastMove<M>> {
-    //    //self.last_move.as_ref()
-    //    unimplemented!()
-    //}
+    pub fn get_last_move(&self) -> Option<&LastMove> {
+        self.last_move.as_ref()
+    }
 
     pub fn who_win(&self) -> Option<Ident> {
         match self.who_move_next() {

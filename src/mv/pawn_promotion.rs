@@ -1,7 +1,7 @@
 use crate::board::{Board, PieceBoardTrait};
 use crate::ident::Ident;
 use crate::move_direction::MoveDirection;
-use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult, Mv};
+use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::{Figure, Piece};
 use crate::position::Position;
 
@@ -10,8 +10,8 @@ pub struct PawnPromotion {
     pub promote_to: Figure,
 }
 
-impl Mv for PawnPromotion {
-    fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
+impl PawnPromotion {
+    pub(crate) fn make_move(&self, board: &mut Board, who_move_next: Ident) -> MakeMoveResult {
         let from_piece = board
             .piece_board(self.from)
             .ok_or(MakeMoveError::NothingToMove)?;

@@ -1,12 +1,10 @@
+use crate::ident::Step;
 use enum_iterator::IntoEnumIterator;
 use serde::{Deserialize, Serialize};
-use crate::ident::Step;
 use std::convert::TryFrom;
 
-
-
 #[derive(PartialEq, Clone, Copy, Debug)]
-pub enum Row {
+pub(crate) enum Row {
     R1,
     R2,
     R3,
@@ -24,7 +22,7 @@ pub enum Row {
 }
 
 impl Row {
-    pub fn get_index(&self) -> isize {
+    pub(crate) fn get_index(&self) -> isize {
         match self {
             Row::R1 => 0,
             Row::R2 => 1,
@@ -67,32 +65,9 @@ impl TryFrom<isize> for Row {
     }
 }
 
-/*impl Index<usize> for Row {
-    type Output = Option<Row>;
-    fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            1 => &Some(Self::R1),
-            2 => &Some(Self::R2),
-            3 => &Some(Self::R3),
-            4 => &Some(Self::R4),
-            5 => &Some(Self::R5),
-            6 => &Some(Self::R6),
-            7 => &Some(Self::R7),
-            8 => &Some(Self::R8),
-            9 => &Some(Self::R9),
-            10 => &Some(Self::R10),
-            11 => &Some(Self::R11),
-            12 => &Some(Self::R12),
-            13 => &Some(Self::R13),
-            14 => &Some(Self::R14),
-            _ => &None
-        }
-    }
-}*/
-
 #[derive(PartialEq, Clone, Copy, Debug)]
 #[allow(non_camel_case_types)]
-pub enum Column {
+pub(crate) enum Column {
     a,
     b,
     c,
@@ -110,7 +85,7 @@ pub enum Column {
 }
 
 impl Column {
-    pub fn get_index(&self) -> isize {
+    pub(crate) fn get_index(&self) -> isize {
         match self {
             Column::a => 0,
             Column::b => 1,
@@ -319,7 +294,7 @@ pub enum Position {
 }
 
 impl Position {
-    pub fn column(&self) -> Column {
+    pub(crate) fn column(&self) -> Column {
         match self {
             Position::a4 => Column::a,
             Position::a5 => Column::a,
@@ -483,7 +458,7 @@ impl Position {
             Position::n11 => Column::n,
         }
     }
-    pub fn row(&self) -> Row {
+    pub(crate) fn row(&self) -> Row {
         match self {
             Position::a4 => Row::R4,
             Position::a5 => Row::R5,
@@ -647,63 +622,15 @@ impl Position {
             Position::n11 => Row::R11,
         }
     }
-    pub fn col_row(&self) -> (Column, Row) {
-        (self.column(), self.row())
-    }
-    pub fn col_row_idx(&self) -> (isize, isize) {
-        (self.column().get_index(), self.row().get_index())
-    }
-    pub fn line_between(pos_one: Position, pos_two: Position) -> Result<Vec<Position>, ()> {
-        let (pos_one_col, pos_one_row) = pos_one.col_row_idx();
-        let (pos_two_col, pos_two_row) = pos_two.col_row_idx();
 
-        if pos_one_col == pos_two_col {
-            return if pos_one_row < pos_two_row {
-                Ok((pos_one_row..pos_two_row)
-                    .skip(1)
-                    .map(|r| Position::try_from((pos_one_col, r)).unwrap())
-                    .collect::<Vec<_>>())
-            } else {
-                Ok((pos_two_row..pos_one_row)
-                    .skip(1)
-                    .map(|r| Position::try_from((pos_one_col, r)).unwrap())
-                    .collect::<Vec<_>>())
-            };
-        } else if pos_one_row == pos_two_row {
-            return if pos_one_col < pos_two_col {
-                Ok((pos_one_col..pos_two_col)
-                    .skip(1)
-                    .map(|c| Position::try_from((c, pos_one_row)).unwrap())
-                    .collect::<Vec<_>>())
-            } else {
-                Ok((pos_two_col..pos_one_col)
-                    .skip(1)
-                    .map(|c| Position::try_from((c, pos_one_row)).unwrap())
-                    .collect::<Vec<_>>())
-            };
-        }
-        Err(())
+    pub(crate) fn col_row_idx(&self) -> (isize, isize) {
+        (self.column().get_index(), self.row().get_index())
     }
 
     pub(crate) fn try_step(&self, step: Step) -> Result<Position, ()> {
         let (col_idx, row_idx) = self.col_row_idx();
 
         Position::try_from((col_idx + step.col_inc, row_idx + step.row_inc))
-    }
-
-    pub fn step(&self, direction: &Direction, distance: usize) -> Result<Position, ()> {
-        let (mut col_idx, mut row_idx) = self.col_row_idx();
-        col_idx += match direction.column {
-            DecNoneInc::Inc => 1 * distance as isize,
-            DecNoneInc::None => 0,
-            DecNoneInc::Dec => -1 * distance as isize,
-        };
-        row_idx += match direction.row {
-            DecNoneInc::Inc => 1 * distance as isize,
-            DecNoneInc::None => 0,
-            DecNoneInc::Dec => -1 * distance as isize,
-        };
-        Position::try_from((col_idx, row_idx))
     }
 }
 
@@ -889,86 +816,9 @@ impl TryFrom<(Column, Row)> for Position {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub enum Line {
+pub(crate) enum Line {
     Column(Column),
     Row(Row),
-}
-
-pub enum DecNoneInc {
-    Dec,
-    None,
-    Inc,
-}
-
-pub struct Direction {
-    pub column: DecNoneInc,
-    pub row: DecNoneInc,
-}
-
-impl Direction {
-    pub fn new(column: DecNoneInc, row: DecNoneInc) -> Direction {
-        Direction { column, row }
-    }
-}
-
-pub struct DirectionStar {
-    pub forward: Direction,
-    pub forward_right: Direction,
-    pub right: Direction,
-    pub backward_right: Direction,
-    pub backward: Direction,
-    pub backward_left: Direction,
-    pub left: Direction,
-    pub forward_left: Direction,
-}
-
-impl Direction {
-    // return all directions
-    pub fn try_all_from_home_line(home_line: Line) -> Result<DirectionStar, ()> {
-        match home_line {
-            Line::Row(Row::R2) | Line::Row(Row::R1) => Ok(DirectionStar {
-                forward: Direction::new(DecNoneInc::None, DecNoneInc::Inc),
-                forward_right: Direction::new(DecNoneInc::Inc, DecNoneInc::Inc),
-                right: Direction::new(DecNoneInc::Inc, DecNoneInc::None),
-                backward_right: Direction::new(DecNoneInc::Inc, DecNoneInc::Dec),
-                backward: Direction::new(DecNoneInc::None, DecNoneInc::Dec),
-                backward_left: Direction::new(DecNoneInc::Dec, DecNoneInc::Dec),
-                left: Direction::new(DecNoneInc::Dec, DecNoneInc::None),
-                forward_left: Direction::new(DecNoneInc::Dec, DecNoneInc::Inc),
-            }),
-            Line::Row(Row::R13) | Line::Row(Row::R14) => Ok(DirectionStar {
-                forward: Direction::new(DecNoneInc::None, DecNoneInc::Dec),
-                forward_right: Direction::new(DecNoneInc::Dec, DecNoneInc::Dec),
-                right: Direction::new(DecNoneInc::Dec, DecNoneInc::None),
-                backward_right: Direction::new(DecNoneInc::Dec, DecNoneInc::Inc),
-                backward: Direction::new(DecNoneInc::None, DecNoneInc::Inc),
-                backward_left: Direction::new(DecNoneInc::Inc, DecNoneInc::Inc),
-                left: Direction::new(DecNoneInc::Inc, DecNoneInc::None),
-                forward_left: Direction::new(DecNoneInc::Inc, DecNoneInc::Dec),
-            }),
-            Line::Column(Column::b) | Line::Column(Column::a) => Ok(DirectionStar {
-                forward: Direction::new(DecNoneInc::Inc, DecNoneInc::None),
-                forward_right: Direction::new(DecNoneInc::Inc, DecNoneInc::Dec),
-                right: Direction::new(DecNoneInc::None, DecNoneInc::Dec),
-                backward_right: Direction::new(DecNoneInc::Dec, DecNoneInc::Dec),
-                backward: Direction::new(DecNoneInc::Dec, DecNoneInc::None),
-                backward_left: Direction::new(DecNoneInc::Dec, DecNoneInc::Inc),
-                left: Direction::new(DecNoneInc::None, DecNoneInc::Inc),
-                forward_left: Direction::new(DecNoneInc::Inc, DecNoneInc::Inc),
-            }),
-            Line::Column(Column::m) | Line::Column(Column::n) => Ok(DirectionStar {
-                forward: Direction::new(DecNoneInc::Dec, DecNoneInc::None),
-                forward_right: Direction::new(DecNoneInc::Dec, DecNoneInc::Inc),
-                right: Direction::new(DecNoneInc::None, DecNoneInc::Inc),
-                backward_right: Direction::new(DecNoneInc::Inc, DecNoneInc::Inc),
-                backward: Direction::new(DecNoneInc::Inc, DecNoneInc::None),
-                backward_left: Direction::new(DecNoneInc::Inc, DecNoneInc::Dec),
-                left: Direction::new(DecNoneInc::None, DecNoneInc::Dec),
-                forward_left: Direction::new(DecNoneInc::Dec, DecNoneInc::Dec),
-            }),
-            _ => Err(()),
-        }
-    }
 }
 
 #[test]

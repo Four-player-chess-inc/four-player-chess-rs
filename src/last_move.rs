@@ -1,7 +1,7 @@
 use crate::ident::Ident;
-use crate::mv::Mv;
+use crate::mv::Move;
 
-pub struct LastMove<M: Mv> {
+pub struct LastMove {
     pub who: Ident,
-    pub mv: M,
+    pub mv: Move,
 }
