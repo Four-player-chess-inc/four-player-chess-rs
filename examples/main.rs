@@ -1,4 +1,4 @@
-use four_player_chess::four_player_game::FourPlayerChess;
+use four_player_chess::four_player_chess::FourPlayerChess;
 use four_player_chess::mv::move_or_capture::MoveOrCapture;
 use four_player_chess::position::Position::*;
 use four_player_chess::mv::Move;

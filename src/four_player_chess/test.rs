@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::four_player_game::FourPlayerChess;
+    use crate::four_player_chess::FourPlayerChess;
     use crate::ident::Ident::*;
     use crate::mv::move_or_capture::MoveOrCapture;
     use crate::mv::{MakeMoveError, Move};
