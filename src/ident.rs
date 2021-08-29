@@ -17,7 +17,7 @@ pub(crate) struct Step {
 }
 
 impl Ident {
-    pub fn spin(&self) -> IdentSpin {
+    pub(crate) fn spin(&self) -> IdentSpin {
         IdentSpin { ident: *self }
     }
 
@@ -55,7 +55,7 @@ impl Ident {
     }
 }
 
-pub struct IdentSpin {
+pub(crate) struct IdentSpin {
     ident: Ident,
 }
 
