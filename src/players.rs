@@ -1,7 +1,6 @@
 use crate::ident::Ident::{self, First, Fourth, Second, Third};
 use crate::state::State;
 use std::default::Default;
-use std::iter::once;
 use std::iter::Iterator;
 
 #[derive(Debug)]
@@ -18,16 +17,11 @@ impl Default for Player {
 }
 
 #[derive(Debug)]
-pub struct Players {
-    first: Player,
-    second: Player,
-    third: Player,
-    fourth: Player,
-}
-
-pub struct PlayersIter<'a> {
-    players: &'a Players,
-    ident: Option<Ident>,
+pub(crate) struct Players {
+    pub(crate) first: Player,
+    pub(crate) second: Player,
+    pub(crate) third: Player,
+    pub(crate) fourth: Player,
 }
 
 #[derive(Debug)]
@@ -43,7 +37,7 @@ pub struct PlayerIdentMut<'a> {
 }
 
 impl<'a> Players {
-    pub fn get_player_mut(&'a mut self, ident: Ident) -> &'a mut Player {
+    pub(crate) fn get_player_mut(&'a mut self, ident: Ident) -> &'a mut Player {
         match ident {
             First => &mut self.first,
             Second => &mut self.second,
@@ -52,40 +46,44 @@ impl<'a> Players {
         }
     }
 
-    pub fn get_player(&self, ident: Ident) -> &Player {
+    /*pub(crate) fn get_player(&self, ident: Ident) -> &Player {
         match ident {
             First => &self.first,
             Second => &self.second,
             Third => &self.third,
             Fourth => &self.fourth,
         }
+    }*/
+
+
+    pub(crate) fn iter(&self) -> impl Iterator<Item = PlayerIdent> {
+        vec![  PlayerIdent {
+            player: &self.first,
+            ident: Ident::First,
+        }, PlayerIdent {
+            player: &self.second,
+            ident: Ident::Second,
+        }, PlayerIdent {
+            player: &self.third,
+            ident: Ident::Third,
+        }, PlayerIdent {
+            player: &self.fourth,
+            ident: Ident::Fourth} ].into_iter()
     }
 
-    // TODO: ugly, short to vec or once like iter_mut
-    pub fn iter(&self) -> PlayersIter {
-        PlayersIter {
-            players: self,
-            ident: Some(First),
-        }
-    }
-
-    pub fn iter_mut(&mut self) -> impl Iterator<Item = PlayerIdentMut> {
-        once(PlayerIdentMut {
+    pub(crate) fn iter_mut(&mut self) -> impl Iterator<Item = PlayerIdentMut> {
+        vec![  PlayerIdentMut {
             player: &mut self.first,
             ident: Ident::First,
-        })
-        .chain(once(PlayerIdentMut {
+        }, PlayerIdentMut {
             player: &mut self.second,
             ident: Ident::Second,
-        }))
-        .chain(once(PlayerIdentMut {
+        }, PlayerIdentMut {
             player: &mut self.third,
             ident: Ident::Third,
-        }))
-        .chain(once(PlayerIdentMut {
+        }, PlayerIdentMut {
             player: &mut self.fourth,
-            ident: Ident::Fourth,
-        }))
+            ident: Ident::Fourth} ].into_iter()
     }
 }
 
@@ -97,26 +95,5 @@ impl Default for Players {
             third: Player::default(),
             fourth: Player::default(),
         }
-    }
-}
-
-impl<'a> Iterator for PlayersIter<'a> {
-    type Item = PlayerIdent<'a>;
-    fn next(&mut self) -> Option<Self::Item> {
-        let ident = match self.ident {
-            None => return None,
-            Some(Fourth) => {
-                self.ident = None;
-                Fourth
-            }
-            Some(ident) => {
-                self.ident = Some(ident.spin().next().unwrap());
-                ident
-            }
-        };
-        Some(PlayerIdent {
-            player: self.players.get_player(ident),
-            ident,
-        })
     }
 }

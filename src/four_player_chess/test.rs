@@ -72,11 +72,11 @@ mod tests {
 
         game.board.piece_board((Figure::King, First)).unwrap();
         game.make_move(Move::move_or_capture(h2, g3)).unwrap();
-        assert_eq!(game.players.get_player(First).state, NoSpecial);
+        assert_eq!(game.players.first.state, NoSpecial);
         game.make_move(Move::move_or_capture(g8, h8)).unwrap();
-        assert_eq!(game.players.get_player(First).state, Check);
+        assert_eq!(game.players.first.state, Check);
         game.make_move(Move::move_or_capture(g12, g3)).unwrap();
-        assert_eq!(game.players.get_player(First).state, Lost);
+        assert_eq!(game.players.first.state, Lost);
 
     }
 }
