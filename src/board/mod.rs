@@ -115,17 +115,11 @@ impl Board {
         RecoverablePieceMove {
             recover: Recover {
                 from: SquarePos {
-                    square: match self.pieces.get(&from) {
-                        Some(piece) => Some(piece.clone()),
-                        None => None,
-                    },
+                    square: self.pieces.get(&from).cloned(),
                     position: from,
                 },
                 to: SquarePos {
-                    square: match self.pieces.get(&to) {
-                        Some(piece) => Some(piece.clone()),
-                        None => None,
-                    },
+                    square: self.pieces.get(&to).cloned(),
                     position: to,
                 },
             },
@@ -188,11 +182,11 @@ impl Board {
                 self.recover_move(recover.recover);
             }
         }
-        return if king_was_under_attack {
+        if king_was_under_attack {
             Ok(CheckMate::Checkmate)
         } else {
             Ok(CheckMate::Stalemate)
-        };
+        }
     }
 
     pub(crate) fn under_attack_any(&self, target_pos: Position, ours: Ident) -> Option<Position> {

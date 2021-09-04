@@ -1,5 +1,5 @@
-pub mod move_or_capture;
 pub mod castling;
+pub mod move_or_capture;
 pub mod pawn_promotion;
 
 use crate::board::Board;
@@ -7,7 +7,7 @@ use crate::ident::Ident;
 use crate::mv::castling::Castling;
 use crate::mv::move_or_capture::MoveOrCapture;
 use crate::mv::pawn_promotion::PawnPromotion;
-use crate::piece::{Figure};
+use crate::piece::Figure;
 use crate::position::Position;
 
 #[derive(Debug, PartialEq)]
@@ -26,6 +26,7 @@ pub enum MakeMoveOk {
 
 type MakeMoveResult = Result<MakeMoveOk, MakeMoveError>;
 
+#[derive(Debug, Clone)]
 pub enum Move {
     MoveOrCapture(MoveOrCapture),
     PawnPromotion(PawnPromotion),

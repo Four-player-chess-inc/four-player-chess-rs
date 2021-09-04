@@ -1,11 +1,11 @@
 #[cfg(test)]
 mod tests {
+    use crate::board::PieceBoardTrait;
     use crate::four_player_chess::FourPlayerChess;
     use crate::ident::Ident::*;
-    use crate::mv::{Move, MakeMoveError};
-    use crate::position::Position::*;
-    use crate::board::PieceBoardTrait;
+    use crate::mv::{MakeMoveError, Move};
     use crate::piece::Figure;
+    use crate::position::Position::*;
     use crate::state::State::*;
 
     #[test]
@@ -44,7 +44,6 @@ mod tests {
         let t = game.make_move(Move::move_or_capture(c7, d7));
         assert_eq!(t.unwrap_err(), MakeMoveError::MoveUnderCheck);
 
-
         let mut game = FourPlayerChess::new();
         game.make_move(Move::move_or_capture(h2, h3)).unwrap();
         game.make_move(Move::move_or_capture(b8, d8)).unwrap();
@@ -77,6 +76,5 @@ mod tests {
         assert_eq!(game.players.first.state, Check);
         game.make_move(Move::move_or_capture(g12, g3)).unwrap();
         assert_eq!(game.players.first.state, Lost);
-
     }
 }

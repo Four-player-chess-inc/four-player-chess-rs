@@ -4,6 +4,7 @@ use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::Figure;
 use crate::position::Position;
 
+#[derive(Debug, Clone)]
 pub struct MoveOrCapture {
     pub from: Position,
     pub to: Position,

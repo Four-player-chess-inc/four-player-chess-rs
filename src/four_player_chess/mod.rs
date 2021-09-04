@@ -2,11 +2,11 @@ use std::default::Default;
 
 use crate::board::Board;
 use crate::ident::Ident::{self};
+use crate::last_move::LastMove;
 use crate::mv::{MakeMoveError, MakeMoveOk, Move};
 use crate::players::Players;
 use crate::state::State;
 use crate::state::State::Lost;
-use crate::last_move::LastMove;
 
 mod test;
 
@@ -30,7 +30,7 @@ impl FourPlayerChess {
     pub fn make_move(&mut self, mv: Move) -> Result<(), MakeMoveError> {
         let who_move_next = match self.who_move_next {
             Some(wmn) => wmn,
-            None => return Err(MakeMoveError::GameOver)
+            None => return Err(MakeMoveError::GameOver),
         };
 
         let ok = match mv.make_move(&mut self.board, who_move_next) {
@@ -49,7 +49,7 @@ impl FourPlayerChess {
 
         self.last_move = Some(LastMove {
             who: who_move_next,
-            mv
+            mv,
         });
 
         self.update_checkmates();

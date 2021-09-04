@@ -83,15 +83,11 @@ mod test {
             vec![a8, b8, c9, d10, e11, f12, g13, b7, b6, a6]
         );
 
-
         // test king
         let mut board = Board::new();
         board.piece_move(h1, h8);
         board.piece_move(g2, g8);
         let t = board.piece_board(h8).unwrap();
-        assert_eq!(
-            t.move_variants(),
-            vec![h9, i9, i8, i7, h7, g7, g9]
-        );
+        assert_eq!(t.move_variants(), vec![h9, i9, i8, i7, h7, g7, g9]);
     }
 }

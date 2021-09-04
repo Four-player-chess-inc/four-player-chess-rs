@@ -5,6 +5,7 @@ use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::Figure;
 use crate::position::Position;
 
+#[derive(Debug, Clone)]
 pub struct Castling {
     pub rook: Position,
 }

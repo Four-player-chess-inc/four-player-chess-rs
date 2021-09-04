@@ -5,6 +5,7 @@ use crate::mv::{MakeMoveError, MakeMoveOk, MakeMoveResult};
 use crate::piece::{Figure, Piece};
 use crate::position::Position;
 
+#[derive(Debug, Clone)]
 pub struct PawnPromotion {
     pub from: Position,
     pub promote_to: Figure,

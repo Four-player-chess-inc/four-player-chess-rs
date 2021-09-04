@@ -1,6 +1,6 @@
 use four_player_chess::four_player_chess::FourPlayerChess;
-use four_player_chess::position::Position::*;
 use four_player_chess::mv::Move;
+use four_player_chess::position::Position::*;
 
 fn main() {
     let mut game = FourPlayerChess::new();

@@ -55,35 +55,48 @@ impl<'a> Players {
         }
     }*/
 
-
     pub(crate) fn iter(&self) -> impl Iterator<Item = PlayerIdent> {
-        vec![  PlayerIdent {
-            player: &self.first,
-            ident: Ident::First,
-        }, PlayerIdent {
-            player: &self.second,
-            ident: Ident::Second,
-        }, PlayerIdent {
-            player: &self.third,
-            ident: Ident::Third,
-        }, PlayerIdent {
-            player: &self.fourth,
-            ident: Ident::Fourth} ].into_iter()
+        vec![
+            PlayerIdent {
+                player: &self.first,
+                ident: Ident::First,
+            },
+            PlayerIdent {
+                player: &self.second,
+                ident: Ident::Second,
+            },
+            PlayerIdent {
+                player: &self.third,
+                ident: Ident::Third,
+            },
+            PlayerIdent {
+                player: &self.fourth,
+                ident: Ident::Fourth,
+            },
+        ]
+        .into_iter()
     }
 
     pub(crate) fn iter_mut(&mut self) -> impl Iterator<Item = PlayerIdentMut> {
-        vec![  PlayerIdentMut {
-            player: &mut self.first,
-            ident: Ident::First,
-        }, PlayerIdentMut {
-            player: &mut self.second,
-            ident: Ident::Second,
-        }, PlayerIdentMut {
-            player: &mut self.third,
-            ident: Ident::Third,
-        }, PlayerIdentMut {
-            player: &mut self.fourth,
-            ident: Ident::Fourth} ].into_iter()
+        vec![
+            PlayerIdentMut {
+                player: &mut self.first,
+                ident: Ident::First,
+            },
+            PlayerIdentMut {
+                player: &mut self.second,
+                ident: Ident::Second,
+            },
+            PlayerIdentMut {
+                player: &mut self.third,
+                ident: Ident::Third,
+            },
+            PlayerIdentMut {
+                player: &mut self.fourth,
+                ident: Ident::Fourth,
+            },
+        ]
+        .into_iter()
     }
 }
 
