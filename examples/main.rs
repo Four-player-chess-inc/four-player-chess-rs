@@ -13,5 +13,5 @@ fn main() {
             Err(e) => println!("move failed due to error {:?}", e),
         }
     }
-    println!("gave over, winner is {:?}", game.who_win().unwrap());
+    println!("game over, the winner is {:?}", game.who_win().unwrap());
 }
