@@ -2,7 +2,7 @@ use crate::move_direction::MoveDirection;
 use crate::position::Position;
 use std::iter::Iterator;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Ident {
     First,
     Second,
