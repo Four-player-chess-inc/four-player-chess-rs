@@ -10,7 +10,7 @@ use crate::mv::pawn_promotion::PawnPromotion;
 use crate::piece::Figure;
 use crate::position::Position;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum MakeMoveError {
     GameOver,
     NothingToMove,
