@@ -59,7 +59,7 @@ impl FourPlayerChess {
         Ok(())
     }
 
-    pub fn abandon_move(&mut self) {
+    pub fn surrender(&mut self) {
         if let Some(who_move_next) = self.who_move_next {
             let player = self.players.get_player_mut(who_move_next);
             player.state = Lost;

@@ -12,32 +12,32 @@ mod tests {
     fn test_roll_players() {
         let mut game = FourPlayerChess::new();
         assert_eq!(game.who_move_next(), Some(First));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), Some(Second));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), Some(Third));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), None);
         assert_eq!(game.who_win(), Some(Fourth));
 
         let mut game = FourPlayerChess::new();
         assert_eq!(game.who_move_next(), Some(First));
         assert_eq!(game.who_move_next(), Some(First));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), Some(Second));
         game.make_move(Move::move_or_capture(b8, d8)).unwrap();
         assert_eq!(game.who_move_next(), Some(Third));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), Some(Fourth));
-        game.abandon_move();
+        game.surrender();
         assert_eq!(game.who_move_next(), None);
         assert_eq!(game.who_win(), Some(Second));
 
         let mut game = FourPlayerChess::new();
         game.make_move(Move::move_or_capture(g2, g3)).unwrap();
         game.make_move(Move::move_or_capture(b7, c7)).unwrap();
-        game.abandon_move();
-        game.abandon_move();
+        game.surrender();
+        game.surrender();
         assert_eq!(game.who_move_next(), Some(First));
         game.make_move(Move::move_or_capture(g1, g2)).unwrap();
         assert_eq!(game.who_move_next(), Some(Second));
@@ -48,7 +48,7 @@ mod tests {
         game.make_move(Move::move_or_capture(h2, h3)).unwrap();
         game.make_move(Move::move_or_capture(b8, d8)).unwrap();
         game.make_move(Move::move_or_capture(h13, h12)).unwrap();
-        game.abandon_move();
+        game.surrender();
         game.make_move(Move::move_or_capture(h3, h4)).unwrap();
         game.make_move(Move::move_or_capture(d8, e8)).unwrap();
         game.make_move(Move::move_or_capture(h12, h11)).unwrap();
