@@ -7,6 +7,6 @@ pub mod mv;
 mod piece;
 mod players;
 pub mod position;
-mod state;
+pub mod state;
 
 //pub use position::Position;
