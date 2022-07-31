@@ -1,7 +1,8 @@
+use std::collections::HashMap;
 use std::default::Default;
 
 use crate::board::Board;
-use crate::ident::Ident::{self};
+use crate::ident::Ident::{self, First, Fourth, Second, Third};
 use crate::last_move::LastMove;
 use crate::mv::{MakeMoveError, MakeMoveOk, Move};
 use crate::players::Players;
@@ -105,6 +106,15 @@ impl FourPlayerChess {
 
     pub fn get_last_move(&self) -> Option<&LastMove> {
         self.last_move.as_ref()
+    }
+
+    pub fn get_player_states(&self) -> HashMap<Ident, State> {
+        HashMap::from([
+            (First, self.players.first.state),
+            (Second, self.players.second.state),
+            (Third, self.players.third.state),
+            (Fourth, self.players.fourth.state),
+        ])
     }
 
     pub fn who_win(&self) -> Option<Ident> {
