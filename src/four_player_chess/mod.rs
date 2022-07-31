@@ -108,7 +108,7 @@ impl FourPlayerChess {
         self.last_move.as_ref()
     }
 
-    pub fn get_player_states(&self) -> HashMap<Ident, State> {
+    pub fn get_players_states(&self) -> HashMap<Ident, State> {
         HashMap::from([
             (First, self.players.first.state),
             (Second, self.players.second.state),
