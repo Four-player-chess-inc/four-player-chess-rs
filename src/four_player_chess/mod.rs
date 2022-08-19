@@ -8,6 +8,7 @@ use crate::mv::{MakeMoveError, MakeMoveOk, Move};
 use crate::players::Players;
 use crate::state::State;
 use crate::state::State::Lost;
+use enum_iterator::all;
 
 mod test;
 
@@ -74,7 +75,11 @@ impl FourPlayerChess {
             None => return,
         };
 
-        for maybe_next_move in prev_who_move_next.spin() {
+        for maybe_next_move in all::<Ident>()
+            .cycle()
+            .skip_while(|i| *i != prev_who_move_next)
+            .skip(1)
+        {
             let no_lost_players = self.players.iter().filter(|p| p.player.state != Lost);
             if no_lost_players.count() == 1 {
                 self.who_move_next = None;

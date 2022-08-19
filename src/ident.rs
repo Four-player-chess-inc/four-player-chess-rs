@@ -1,8 +1,8 @@
 use crate::move_direction::MoveDirection;
 use crate::position::Position;
-use std::iter::Iterator;
+use enum_iterator::Sequence;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Ident {
     First,
     Second,
@@ -17,10 +17,6 @@ pub(crate) struct Step {
 }
 
 impl Ident {
-    pub(crate) fn spin(&self) -> IdentSpin {
-        IdentSpin { ident: *self }
-    }
-
     pub(crate) fn direction_transformer(&self) -> fn(MoveDirection) -> Step {
         match self {
             Self::First => |md| Step {
@@ -52,22 +48,5 @@ impl Ident {
                 (Position::n11.column().get_index() - pos.column().get_index()) as usize + 1
             }
         }
-    }
-}
-
-pub(crate) struct IdentSpin {
-    ident: Ident,
-}
-
-impl Iterator for IdentSpin {
-    type Item = Ident;
-    fn next(&mut self) -> Option<Self::Item> {
-        self.ident = match self.ident {
-            Ident::First => Ident::Second,
-            Ident::Second => Ident::Third,
-            Ident::Third => Ident::Fourth,
-            Ident::Fourth => Ident::First,
-        };
-        Some(self.ident)
     }
 }
